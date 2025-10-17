@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technology in Health</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0a0a1a;
+            color: #e0e0e0;
+            overflow: hidden; /* Prevent scrollbars from the canvas */
+            line-height: 1.7;
+            letter-spacing: 0.5px;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
+            transform: scale(0.95);
+            overflow-y: auto; /* Enable scrolling for content-heavy slides */
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Exo 2', sans-serif;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+        }
+        
+        .content-box {
+            background: rgba(10, 25, 47, 0.8);
+            border: 1px solid rgba(0, 191, 255, 0.5);
+            border-radius: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .tech-button {
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 0.75rem 1.5rem;
+            font-family: 'Exo 2', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px #00ffff, inset 0 0 10px #00ffff;
+            position: relative;
+            overflow: hidden;
+            text-align: center; /* Ensure text is centered for <a> tags */
+        }
+
+        .tech-button:hover {
+            background: #00ffff;
+            color: #0a0a1a;
+            box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff;
+        }
+        
+        /* Custom list style */
+        .tech-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 0.75rem;
+        }
+        .tech-list li::before {
+            content: '»';
+            position: absolute;
+            left: 0;
+            color: #00ffff;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            bottom: 2rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4rem;
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-buttons {
+                padding: 0 1.5rem;
+            }
+            .content-box {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="slide-0" class="slide active">
+        <div class="content-box text-center">
+            <h1 class="text-3xl md:text-5xl mb-6" data-key="welcome">Welcome</h1>
+            <h2 class="text-xl md:text-2xl mb-8" data-key="choose_language">Please Choose Your Language</h2>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="https://alphamedassistance.github.io/entranceportal/" class="tech-button">Home</a>
+                <button class="tech-button" onclick="selectLanguage('en')">English</button>
+                <button class="tech-button" onclick="selectLanguage('tl')">Tagalog</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="slide-1" class="slide">
+        <div class="content-box text-center">
+            <h1 class="text-3xl md:text-5xl mb-4" data-key="slide1_title"></h1>
+            <p class="text-lg md:text-xl italic" data-key="slide1_subtitle"></p>
+        </div>
+    </div>
+
+    <div id="slide-2" class="slide">
+        <div class="content-box">
+            <h2 class="text-2xl md:text-4xl mb-6 text-center" data-key="slide2_title"></h2>
+            <p class="text-lg mb-6" data-key="slide2_intro"></p>
+            <ul class="tech-list text-lg space-y-3">
+                <li data-key="slide2_p1"></li>
+                <li data-key="slide2_p2"></li>
+                <li data-key="slide2_p3"></li>
+                <li data-key="slide2_p4"></li>
+            </ul>
+            <p class="text-lg mt-6 font-bold text-center" data-key="slide2_conclusion"></p>
+        </div>
+    </div>
+
+    <div id="slide-3" class="slide">
+        <div class="content-box">
+            <h2 class="text-2xl md:text-4xl mb-6 text-center" data-key="slide3_title"></h2>
+            <p class="text-lg mb-6" data-key="slide3_intro"></p>
+            <h3 class="text-xl md:text-2xl mb-4 text-cyan-400" data-key="slide3_features_title"></h3>
+            <ul class="tech-list text-lg space-y-3">
+                <li data-key="slide3_f1"></li>
+                <li data-key="slide3_f2"></li>
+                <li data-key="slide3_f3"></li>
+                <li data-key="slide3_f4"></li>
+                <li data-key="slide3_f5"></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="slide-4" class="slide">
+         <div class="content-box text-center">
+            <h2 class="text-2xl md:text-4xl" data-key="slide4_title"></h2>
+        </div>
+    </div>
+
+    <div id="slide-5" class="slide">
+        <div class="content-box text-center">
+            <h2 class="text-2xl md:text-4xl" data-key="slide5_title"></h2>
+        </div>
+    </div>
+
+    <div id="slide-6" class="slide">
+        <div class="content-box">
+            <h2 class="text-2xl md:text-4xl mb-6 text-center" data-key="slide6_title"></h2>
+             <p class="text-lg mb-6" data-key="slide6_intro"></p>
+            <ul class="tech-list text-lg space-y-4">
+                <li><strong data-key="slide6_tool1_title"></strong><span data-key="slide6_tool1_desc"></span></li>
+                <li><strong data-key="slide6_tool2_title"></strong><span data-key="slide6_tool2_desc"></span></li>
+                <li><strong data-key="slide6_tool3_title"></strong><span data-key="slide6_tool3_desc"></span></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="slide-7" class="slide">
+        <div class="content-box text-center">
+            <h2 class="text-2xl md:text-4xl" data-key="slide7_title"></h2>
+        </div>
+    </div>
+
+    <div id="slide-8" class="slide">
+        <div class="content-box">
+            <h2 class="text-2xl md:text-4xl mb-6 text-center" data-key="slide8_title"></h2>
+            <p class="text-lg mb-6" data-key="slide8_intro"></p>
+            <ul class="tech-list text-lg space-y-3">
+                <li data-key="slide8_b1"></li>
+                <li data-key="slide8_b2"></li>
+                <li data-key="slide8_b3"></li>
+                <li data-key="slide8_b4"></li>
+                <li data-key="slide8_b5"></li>
+            </ul>
+            <div class="text-center mt-8">
+                 <button class="tech-button" onclick="goToSlide(9)" data-key="price_button"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="slide-9" class="slide">
+        <div class="content-box">
+            <h2 class="text-2xl md:text-3xl mb-4 text-center" data-key="price_title"></h2>
+            <p class="text-center mb-2"><b data-key="price_app_label"></b> <span data-key="price_app_name"></span></p>
+            <p class="text-center mb-6"><b data-key="price_client_label"></b> <span data-key="price_client_name"></span></p>
+            
+            <h3 class="text-xl md:text-2xl text-cyan-400 mb-3" data-key="price_quote_title"></h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border border-cyan-700">
+                    <thead class="bg-cyan-900/50">
+                        <tr>
+                            <th class="p-3" data-key="price_t1_h1"></th>
+                            <th class="p-3" data-key="price_t1_h2"></th>
+                            <th class="p-3" data-key="price_t1_h3"></th>
+                            <th class="p-3" data-key="price_t1_h4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t border-cyan-700">
+                            <td class="p-3" data-key="price_t1_r1_c1"></td>
+                            <td class="p-3" data-key="price_t1_r1_c2"></td>
+                            <td class="p-3" data-key="price_t1_r1_c3"></td>
+                            <td class="p-3" data-key="price_t1_r1_c4"></td>
+                        </tr>
+                         <tr class="border-t border-cyan-700 bg-gray-900/30">
+                            <td class="p-3" data-key="price_t1_r2_c1"></td>
+                            <td class="p-3" data-key="price_t1_r2_c2"></td>
+                            <td class="p-3" data-key="price_t1_r2_c3"></td>
+                            <td class="p-3" data-key="price_t1_r2_c4"></td>
+                        </tr>
+                        <tr class="border-t border-cyan-700 font-bold text-cyan-400">
+                            <td class="p-3" data-key="price_t1_r3_c1"></td>
+                            <td class="p-3" data-key="price_t1_r3_c2"></td>
+                            <td class="p-3" data-key="price_t1_r3_c3"></td>
+                            <td class="p-3" data-key="price_t1_r3_c4"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="text-xl md:text-2xl text-cyan-400 mt-8 mb-3" data-key="price_addon_title"></h3>
+             <div class="overflow-x-auto">
+                <table class="w-full text-left border border-cyan-700">
+                     <thead class="bg-cyan-900/50">
+                        <tr>
+                            <th class="p-3" data-key="price_t2_h1"></th>
+                            <th class="p-3" data-key="price_t2_h2"></th>
+                            <th class="p-3" data-key="price_t2_h3"></th>
+                            <th class="p-3" data-key="price_t2_h4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t border-cyan-700">
+                            <td class="p-3" data-key="price_t2_r1_c1"></td>
+                            <td class="p-3" data-key="price_t2_r1_c2"></td>
+                            <td class="p-3" data-key="price_t2_r1_c3"></td>
+                            <td class="p-3" data-key="price_t2_r1_c4"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-8">
+                 <button class="tech-button" onclick="goToSlide(10)" data-key="purchase_button"></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="slide-10" class="slide">
+        <div class="content-box text-center">
+            <h2 class="text-2xl md:text-4xl mb-6" data-key="contact_thank_you"></h2>
+            <p class="text-lg mb-8" data-key="contact_prompt"></p>
+            <a href="https://web.facebook.com/profile.php?id=61578341193853" class="tech-button" data-key="contact_button"></a>
+        </div>
+    </div>
+
+
+    <div id="nav-container" class="nav-buttons" style="display: none;">
+        <button class="tech-button" id="prev-btn" data-key="prev_button"></button>
+        <button class="tech-button" id="next-btn" data-key="next_button"></button>
+    </div>
+
+
+    <script>
+        // --- CONTENT ---
+        const content = {
+            en: {
+                welcome: "Welcome",
+                choose_language: "Please Choose Your Language",
+                slide1_title: "Medicine Inventory Management System",
+                slide1_subtitle: "A streamlined solution for efficient medicine inventory tracking.",
+                slide2_title: "Introduction - The Core Problem",
+                slide2_intro: "Managing medicine inventory presents unique challenges:",
+                slide2_p1: "Tracking expiration dates is critical for patient safety.",
+                slide2_p2: "Maintaining optimal stock levels avoids shortages and waste.",
+                slide2_p3: "Manual tracking is prone to errors and is time-consuming.",
+                slide2_p4: "Quick access to data for reporting is essential.",
+                slide2_conclusion: "Our app provides a simple, digital solution to these problems.",
+                slide3_title: "The Dashboard - Your Command Center",
+                slide3_intro: "The main screen gives you an at-a-glance overview of your inventory.",
+                slide3_features_title: "Key Features:",
+                slide3_f1: "Centralized Data Table: View all essential item details: Name, Quantity, Price, and Expiration Date.",
+                slide3_f2: "Live Search: Instantly find any medicine by typing its name in the search bar.",
+                slide3_f3: "Real-time Totals: The dashboard always shows the total number of unique items in your inventory.",
+                slide3_f4: "Easy Navigation: Use 'Previous' and 'Next' buttons to seamlessly browse through your stock list.",
+                slide3_f5: "Live Timestamp: A clear display of the current date and time for accurate record-keeping.",
+                slide4_title: "Feature Focus - Adding & Editing Items",
+                slide5_title: "Feature Focus - Dispensing Medicine",
+                slide6_title: "Powerful Reporting Tools",
+                slide6_intro: "The app includes several built-in reports to give you valuable insights.",
+                slide6_tool1_title: "Daily Product Movement (DPM):",
+                slide6_tool1_desc: " Select any date to see a full report of all items dispensed on that day. Includes quantity, total sale amount, and time of transaction.",
+                slide6_tool2_title: "Item for Replacement:",
+                slide6_tool2_desc: " Generates a list of all items that have been dispensed. Helps you quickly identify which medicines need to be re-ordered.",
+                slide6_tool3_title: "Item Expiration:",
+                slide6_tool3_desc: " Proactively view a list of all items that will expire within the next 10 days. Allows you to manage stock effectively and prevent waste.",
+                slide7_title: "Feature Focus - Export & Import Data",
+                slide8_title: "Summary & Key Benefits",
+                slide8_intro: "Our Medicine Inventory App is designed to be:",
+                slide8_b1: "Efficient: Save time with digital tracking and powerful search.",
+                slide8_b2: "Accurate: Reduce human error and maintain precise stock levels.",
+                slide8_b3: "Safe: Proactively manage expiration dates to ensure patient safety.",
+                slide8_b4: "Insightful: Use built-in reports to make smarter purchasing decisions.",
+                slide8_b5: "Secure: Your data is stored locally on your device, and can be easily backed up.",
+                price_button: "Price and Quotation",
+                price_title: "Subscription-Based Pricing (Yearly)",
+                price_app_label: "Application:",
+                price_app_name: "Medicine Inventory Support App",
+                price_client_label: "Client Type:",
+                price_client_name: "Single Client",
+                price_quote_title: "Quotation Table (Draft Structure)",
+                price_t1_h1: "Item / Description",
+                price_t1_h2: "Inclusions",
+                price_t1_h3: "Billing Cycle",
+                price_t1_h4: "Cost (PHP)",
+                price_t1_r1_c1: "Annual Licensing / Access Fee",
+                price_t1_r1_c2: "• Exclusive use of the application<br>• 1 client account<br>• Standard features access",
+                price_t1_r1_c3: "Yearly",
+                price_t1_r1_c4: "Free due to promotion but limited time only",
+                price_t1_r2_c1: "Maintenance & Updates",
+                price_t1_r2_c2: "• Bug fixes<br>• Feature enhancements<br>• Performance optimization",
+                price_t1_r2_c3: "Yearly",
+                price_t1_r2_c4: "Free due to promotion but limited time only",
+                price_t1_r3_c1: "Total Annual Cost",
+                price_t1_r3_c2: "Licensing + Maintenance",
+                price_t1_r3_c3: "Yearly",
+                price_t1_r3_c4: "Free due to promotion but limited time only",
+                price_addon_title: "Optional Add-On (If Needed in the Future)",
+                price_t2_h1: "Add-On Service",
+                price_t2_h2: "Inclusions",
+                price_t2_h3: "Billing Cycle",
+                price_t2_h4: "Cost (PHP)",
+                price_t2_r1_c1: "Technical Support (Optional)",
+                price_t2_r1_c2: "Email/Chat assistance / Client training sessions",
+                price_t2_r1_c3: "Yearly",
+                price_t2_r1_c4: "Free due to promotion but limited time only",
+                purchase_button: "Purchase",
+                contact_thank_you: "Thank You!",
+                contact_prompt: "Thank you for your interest in our digital products. To pursue your availment, please message us on our facebook page by clicking this button:",
+                contact_button: "Message Us",
+                prev_button: "Prev",
+                next_button: "Next",
+            },
+            tl: {
+                welcome: "Maligayang Pagdating",
+                choose_language: "Pumili ng Iyong Wika",
+                slide1_title: "Sistema ng Pamamahala ng Imbentaryo ng Gamot",
+                slide1_subtitle: "Isang pinadaling solusyon para sa mahusay na pagsubaybay ng imbentaryo ng gamot.",
+                slide2_title: "Panimula - Ang Pangunahing Problema",
+                slide2_intro: "Ang pamamahala sa imbentaryo ng gamot ay may mga natatanging hamon:",
+                slide2_p1: "Ang pagsubaybay sa mga expiration date ay kritikal para sa kaligtasan ng pasyente.",
+                slide2_p2: "Ang pagpapanatili ng sapat na antas ng stock ay umiiwas sa kakulangan at pag-aaksaya.",
+                slide2_p3: "Ang manu-manong pagsubaybay ay madaling magkamali at matagal gawin.",
+                slide2_p4: "Ang mabilis na access sa data para sa pag-uulat ay mahalaga.",
+                slide2_conclusion: "Ang aming app ay nagbibigay ng simple at digital na solusyon sa mga problemang ito.",
+                slide3_title: "Ang Dashboard - Iyong Sentro ng Pamamahala",
+                slide3_intro: "Ang pangunahing screen ay nagbibigay ng mabilisang pangkalahatang-ideya ng iyong imbentaryo.",
+                slide3_features_title: "Mga Pangunahing Tampok:",
+                slide3_f1: "Sentralisadong Data Table: Tingnan ang lahat ng mahahalagang detalye ng item: Pangalan, Dami, Presyo, at Petsa ng Pag-expire.",
+                slide3_f2: "Live Search: Agad na hanapin ang anumang gamot sa pamamagitan ng pag-type ng pangalan nito.",
+                slide3_f3: "Real-time na Kabuuan: Palaging ipinapakita ng dashboard ang kabuuang bilang ng mga natatanging item.",
+                slide3_f4: "Madaling Nabigasyon: Gamitin ang mga 'Previous' at 'Next' na button para madaling mag-browse sa iyong listahan.",
+                slide3_f5: "Live Timestamp: Isang malinaw na display ng kasalukuyang petsa at oras para sa tumpak na pag-record.",
+                slide4_title: "Tampok - Pagdaragdag at Pag-edit ng mga Item",
+                slide5_title: "Tampok - Pagbibigay ng Gamot",
+                slide6_title: "Mabisang Kagamitan sa Pag-uulat",
+                slide6_intro: "Ang app ay may kasamang ilang mga built-in na ulat upang bigyan ka ng mahahalagang kaalaman.",
+                slide6_tool1_title: "Pang-araw-araw na Paggalaw ng Produkto (DPM):",
+                slide6_tool1_desc: " Pumili ng anumang petsa upang makita ang buong ulat ng lahat ng item na naibigay sa araw na iyon. Kasama ang dami, kabuuang halaga ng benta, at oras ng transaksyon.",
+                slide6_tool2_title: "Item para sa Pagpapalit:",
+                slide6_tool2_desc: " Gumagawa ng listahan ng lahat ng item na naibigay na. Tumutulong ito na mabilis na matukoy kung aling mga gamot ang kailangang i-order muli.",
+                slide6_tool3_title: "Pag-expire ng Item:",
+                slide6_tool3_desc: " Maagap na tingnan ang listahan ng lahat ng item na mag-e-expire sa loob ng susunod na 10 araw. Nagbibigay-daan ito sa epektibong pamamahala ng stock at pag-iwas sa pag-aaksaya.",
+                slide7_title: "Tampok - Pag-export at Pag-import ng Data",
+                slide8_title: "Buod at Mga Pangunahing Benepisyo",
+                slide8_intro: "Ang aming Medicine Inventory App ay idinisenyo upang maging:",
+                slide8_b1: "Mahusay: Makatipid ng oras sa digital na pagsubaybay at mabilis na paghahanap.",
+                slide8_b2: "Tumpak: Bawasan ang pagkakamali ng tao at mapanatili ang eksaktong antas ng stock.",
+                slide8_b3: "Ligtas: Maagap na pamahalaan ang mga expiration date upang matiyak ang kaligtasan ng pasyente.",
+                slide8_b4: "Matalino: Gumamit ng mga built-in na ulat para sa mas matalinong desisyon sa pagbili.",
+                slide8_b5: "Seguro: Ang iyong data ay lokal na nakaimbak sa iyong device, at madaling i-back up.",
+                price_button: "Presyo at Sipi",
+                price_title: "Presyo Batay sa Subskripsyon (Taunan)",
+                price_app_label: "Aplikasyon:",
+                price_app_name: "Medicine Inventory Support App",
+                price_client_label: "Uri ng Kliyente:",
+                price_client_name: "Isang Kliyente",
+                price_quote_title: "Talaan ng Sipi (Draft na Istraktura)",
+                price_t1_h1: "Item / Deskripsyon",
+                price_t1_h2: "Mga Kasama",
+                price_t1_h3: "Siklo ng Pagsingil",
+                price_t1_h4: "Halaga (PHP)",
+                price_t1_r1_c1: "Taunang Bayad sa Lisensya / Access",
+                price_t1_r1_c2: "• Eksklusibong paggamit ng aplikasyon<br>• 1 client account<br>• Access sa mga karaniwang tampok",
+                price_t1_r1_c3: "Taunan",
+                price_t1_r1_c4: "Free due to promotion but limited time only",
+                price_t1_r2_c1: "Pagpapanatili at mga Update",
+                price_t1_r2_c2: "• Pag-aayos ng mga bug<br>• Pagpapahusay ng mga tampok<br>• Pag-optimize ng pagganap",
+                price_t1_r2_c3: "Taunan",
+                price_t1_r2_c4: "Libre dahil sa status na pang-promosyon",
+                price_t1_r3_c1: "Kabuuang Taunang Halaga",
+                price_t1_r3_c2: "Lisensya + Pagpapanatili",
+                price_t1_r3_c3: "Taunan",
+                price_t1_r3_c4: "Free due to promotion but limited time only",
+                price_addon_title: "Opsyonal na Add-On (Kung Kinakailangan sa Hinaharap)",
+                price_t2_h1: "Serbisyong Add-On",
+                price_t2_h2: "Mga Kasama",
+                price_t2_h3: "Siklo ng Pagsingil",
+                price_t2_h4: "Halaga (PHP)",
+                price_t2_r1_c1: "Teknikal na Suporta (Opsyonal)",
+                price_t2_r1_c2: "Tulong sa Email/Chat / Mga sesyon ng pagsasanay sa kliyente",
+                price_t2_r1_c3: "Taunan",
+                price_t2_r1_c4: "Libre dahil sa status na pang-promosyon",
+                purchase_button: "Bumili",
+                contact_thank_you: "Salamat!",
+                contact_prompt: "Salamat sa iyong interes sa aming mga digital na produkto. Upang ituloy ang iyong pagkuha, mangyaring mag-message sa aming page sa pamamagitan ng pag-click sa button na ito:",
+                contact_button: "Mag-message sa Amin",
+                prev_button: "Nakaraan",
+                next_button: "Susunod",
+            }
+        };
+
+        // --- SLIDE NAVIGATION ---
+        let currentSlide = 0;
+        const totalContentSlides = 8;
+        const slides = document.querySelectorAll('.slide');
+        const navContainer = document.getElementById('nav-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        function goToSlide(slideIndex) {
+            if (slideIndex < 0 || slideIndex >= slides.length) return;
+            
+            slides[currentSlide].classList.remove('active');
+            slides[slideIndex].classList.add('active');
+            currentSlide = slideIndex;
+
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            if (currentSlide > 0 && currentSlide <= totalContentSlides) {
+                navContainer.style.display = 'flex';
+                prevBtn.style.visibility = currentSlide > 1 ? 'visible' : 'hidden';
+                nextBtn.style.visibility = currentSlide < totalContentSlides ? 'visible' : 'hidden';
+            } else if (currentSlide === 9 || currentSlide === 10) {
+                 navContainer.style.display = 'flex';
+                 prevBtn.style.visibility = 'visible';
+                 nextBtn.style.visibility = 'hidden';
+            } else {
+                navContainer.style.display = 'none';
+            }
+        }
+
+        prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+        
+        // --- LANGUAGE SELECTION ---
+        let currentLang = 'en';
+
+        function renderContent() {
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.dataset.key;
+                if (content[currentLang][key]) {
+                    el.innerHTML = content[currentLang][key];
+                }
+            });
+        }
+
+        function selectLanguage(lang) {
+            currentLang = lang;
+            renderContent();
+            goToSlide(1);
+        }
+
+        // --- BACKGROUND CANVAS ANIMATION ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        const mouse = {
+            x: null,
+            y: null,
+            radius: (canvas.height / 120) * (canvas.width / 120)
+        }
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * .5) - .25;
+                let directionY = (Math.random() * .5) - .25;
+                let color = '#00ffff';
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                        ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(0, 191, 255, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            mouse.radius = ((canvas.height / 120) * (canvas.height / 120));
+            init();
+        });
+
+        // Initial setup
+        init();
+        animate();
+        renderContent();
+
+    </script>
+</body>
+</html>
